@@ -1,4 +1,4 @@
-name: Build Foe Fells
+name: Build FoeFellsPopup
 
 on:
   workflow_dispatch:
