@@ -1,0 +1,33 @@
+name: Build Foe Fells
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Get files
+        uses: actions/checkout@v4
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Create WinForms project
+        shell: pwsh
+        run: |
+          dotnet new winforms -n FoeFellsPopup -f net8.0-windows
+          Copy-Item FoeFellsPopup.cs FoeFellsPopup\Program.cs -Force
+
+      - name: Build EXE
+        run: |
+          dotnet publish FoeFellsPopup\FoeFellsPopup.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o Build
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: FoeFellsPopup-Windows
+          path: Build/FoeFellsPopup.exe
